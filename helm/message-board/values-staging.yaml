@@ -1,3 +1,4 @@
+#部署到prod前的验证
 deployment:
   replicas: 2
 
