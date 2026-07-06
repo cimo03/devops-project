@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deploy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: web
+    track: {{ .Values.track }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+  selector:
+    matchLabels:
+      app: web
+      track: {{ .Values.track }}
+  template:
+    metadata:
+      labels:
+        app: web
+        track: {{ .Values.track }}
+        version: {{ .Values.version }}
+    spec:
+      imagePullSecrets:
+        - name: acr-auth
+      containers:
+      - name: php-fpm
+        image: {{ .Values.deployment.image.php }}
+        command: ["/usr/local/sbin/php-fpm", "-F"]
+        ports:
+        - containerPort: {{ .Values.deployment.containerPort.php }}
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-dbsecret
+              key: rds-host
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-dbsecret
+              key: db-name
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-dbsecret
+              key: db-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-dbsecret
+              key: db-password
+        - name: OSS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-oss-config
+              key: oss-url
+      - name: nginx
+        image: {{ .Values.deployment.image.nginx }}
+        ports:
+        - containerPort: {{ .Values.deployment.containerPort.nginx }}
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        # 添加健康检查探针
+        startupProbe:
+          httpGet:
+            path: /message.php
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1 
+          failureThreshold: 12
+        readinessProbe:
+          httpGet:
+            path: /message.php
+            port: 80
+          initialDelaySeconds: 0 
+          periodSeconds: 5 
+          timeoutSeconds: 2 
+          successThreshold: 1 
+          failureThreshold: 3
+                            
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ .Release.Name }}-nginx-php-config

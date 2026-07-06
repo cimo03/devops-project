@@ -1,0 +1,29 @@
+track: "stable"
+version: "v1"
+
+# Deployment 配置
+deployment:
+  replicas: 3
+  strategy:
+    type: RollingUpdate        # 默认滚动更新
+  image:
+    php: registry.cn-chengdu.aliyuncs.com/cam-ns/message-board:v1
+    nginx: registry.cn-chengdu.aliyuncs.com/cam-ns/nginx:alpine
+  containerPort:
+    php: 9000
+    nginx: 80
+
+# Service 配置
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+# Ingress 配置
+ingress:
+  enabled: false
+  className: "nginx"
+  host: ""
+oss:
+    url: "https://bucket01-gz-20260606-001.oss-cn-guangzhou.aliyuncs.com"
+#数据库敏感信息未定义在此文件中，需通过 secret-values.yaml 提供

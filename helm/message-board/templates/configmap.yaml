@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-php-config
+  namespace: {{ .Release.Namespace }}
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name _;
+        root /var/www/html;
+        index message.php;
+
+        location / {
+            try_files $uri $uri/ /message.php?$args;
+        }
+
+        location ~ \.php$ {
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index message.php;
+            fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
+            include fastcgi_params;
+        }
+        # 添加标识响应头
+        add_header X-Track {{ .Values.track }};
+    }

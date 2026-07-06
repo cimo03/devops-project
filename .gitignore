@@ -1,0 +1,3 @@
+secret-values.yaml
+*.tfstate
+*.tfstate.backup
