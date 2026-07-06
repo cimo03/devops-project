@@ -229,7 +229,7 @@ kubectl delete daemonset -n arms-prom node-exporter
 
 **结果**：压测结束后，CPU 使用率降至 1%，HPA 等待约 5分钟后触发缩容，所有 Pending Pod 被优先终止，副本数恢复到 2。
 
-> ![屏幕截图 2026-06-28 214314](../images/屏幕截图 2026-06-28 214314.png)
+> ![屏幕截图 2026-06-28 214314](../images/image-2026-06-28214314.png)
 >
 > 压测时 HPA 的 TARGETS 飙升、REPLICAS 从 2 自动增加到 8 的终端输出，以及压测结束后回落至 2 的完整过程
 
