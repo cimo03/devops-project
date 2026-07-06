@@ -100,4 +100,4 @@ git push 到 Codeup → Webhook 通知云效 → 流水线自动触发
 -   进入 ACR → `cam-ns` → `message-board` 仓库 → 镜像版本
 -   可见新 Tag `6e674cf7dd87143cca0932029e67bfe47adfc81c`（Git 提交哈希）
 
-![屏幕截图 2026-06-19 171436](../images/屏幕截图 2026-06-19 171436.png)![image-20260619191149609](../images/image-20260619191149609.png)
+![image-2026-06-19 171436](../images/image-2026-06-19 171436.png)![image-20260619191149609](../images/image-20260619191149609.png)
