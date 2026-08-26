@@ -17,7 +17,7 @@
 
 ## 项目架构
 
-> ![image](D:\devops-project\images\image.png)
+> ![image](images\image.png)
 
 ## 核心成果
 
